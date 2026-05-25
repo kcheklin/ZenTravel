@@ -8,18 +8,17 @@ import '../styles/BookingPage.css';
 
 export const BookingPage = ({ setView, globalLang }: { setView: (view: string, id?: string) => void; globalLang: string }) => {
   const [activeTab, setActiveTab] = useState('upcoming');
-  const [bookings, setBookings] = useState<Record<string, unknown>[]>([]);
+  const [bookings, setBookings] = useState<Record<string, any>[]>([]);
   const t = translations[globalLang || 'en']; 
 
-  const getTransportTitle = (item: Record<string, unknown>) => {
+  const getTransportTitle = (item: Record<string, any>) => {
     if (item.transportMode === 'pickup') return 'Airport Pick-up';
     if (item.transportMode === 'dropoff') return 'Airport Drop-off';
     if (item.transportMode === 'rental') return 'Car Rental';
     return (item.name as string) || (item.hotelName as string) || 'Transport';
   };
 
-  // Firebase Timestamp 安全转换逻辑
-  const safeDate = (val: string | number | { seconds: number }) => {
+  const safeDate = (val: any) => {
     if (!val) return "";
     if (typeof val === 'object' && 'seconds' in val) {
       return new Date(val.seconds * 1000).toLocaleDateString('en-GB', {
@@ -31,7 +30,7 @@ export const BookingPage = ({ setView, globalLang }: { setView: (view: string, i
     return String(val);
   };
 
-  const safeSlashDate = (val: string | number | { seconds: number }) => {
+  const safeSlashDate = (val: any) => {
     if (!val) return "";
 
     if (typeof val === 'object' && val.seconds) {
@@ -52,18 +51,8 @@ export const BookingPage = ({ setView, globalLang }: { setView: (view: string, i
       if (parts.length === 3) {
         const [dayRaw, monthRaw, yearRaw] = parts;
         const monthMap: Record<string, number> = {
-          jan: 0,
-          feb: 1,
-          mar: 2,
-          apr: 3,
-          may: 4,
-          jun: 5,
-          jul: 6,
-          aug: 7,
-          sep: 8,
-          oct: 9,
-          nov: 10,
-          dec: 11,
+          jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+          jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
         };
         const day = Number(dayRaw);
         const year = Number(yearRaw);
@@ -77,9 +66,7 @@ export const BookingPage = ({ setView, globalLang }: { setView: (view: string, i
     return String(val);
   };
 
-  // Firebase 实时监听
   useEffect(() => {
-    // Listen for Auth changes first to ensure we have the user
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
       if (user) {
         const q = query(collection(db, "Booking"), where("userId", "==", user.uid));
@@ -93,7 +80,7 @@ export const BookingPage = ({ setView, globalLang }: { setView: (view: string, i
 
         return () => unsubscribeDb();
       } else {
-        setBookings([]); // Clear bookings if logged out
+        setBookings([]);
       }
     });
 
@@ -126,17 +113,15 @@ export const BookingPage = ({ setView, globalLang }: { setView: (view: string, i
                 <div className="zen-status-badge">
                   {isFlight ? t.checkIn : t.confirmed}
                 </div>
-               
+                
                 <div className="zen-card-body">
                   {isFlight ? (
-                    /* 【新版 Design】Ticket 布局：大字体 + 标签式展示 */
                     <div className="zen-ticket-content">
                       <div className="ticket-left">
                         <h4 className="ticket-main-title">{t.depart}</h4>
                         <p className="ticket-text-large">{safeDate(item.date)}</p>
                         
                         <div className="ticket-location-container">
-                          {/* 保留新版的 label 和 value 结构，确保 CSS 渲染大字体 */}
                           <div className="location-row">
                             <span className="location-label">{t.from}</span>
                             <span className="location-value">{item.from}</span>
@@ -149,14 +134,12 @@ export const BookingPage = ({ setView, globalLang }: { setView: (view: string, i
                       </div>
 
                       <div className="ticket-right">
-                        {/* 纯数据渲染，不带 "no:" 前缀 */}
                         <p className="ticket-sub-id">{item.bookingNum || item.bookNum}</p>
                         <p className="ticket-sub">{item.airline}</p>
                         <p className="ticket-sub">{item.pax} {item.pax ? 'pax.' : ''}</p>
                       </div>
                     </div>
                   ) : (
-                    /* 酒店/交通布局 */
                     <div className="zen-card-main-content">
                       <img src={item.imageUrl || mascotImg} alt="item" className="zen-item-thumb" />
                       <div className="zen-item-details">
@@ -175,7 +158,7 @@ export const BookingPage = ({ setView, globalLang }: { setView: (view: string, i
                       </div>
                     </div>
                   )}
-                 
+                  
                   <div className="zen-action-row">
                     {activeTab === 'upcoming' && (
                       <span className="zen-refund-btn" onClick={() => setView('refund', item.id)}>

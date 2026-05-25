@@ -7,6 +7,18 @@ import { HotelResultsPage } from './HotelResultsPage';
 import { searchHotels, toIATA } from '../services/mockTravelAPI'; 
 import "../styles/HotelsPage.css";
 
+interface HotelRecord {
+  name: string;
+  location: string;
+  price: string;
+  rating: string;
+  description: string;
+  amenities: string[];
+  image_keyword: string;
+  isRecommended: boolean;
+  [key: string]: any;
+}
+
 interface HotelProps {
   setView: (v: string) => void;
   pendingSearch?: { origin: string; destination: string } | null;
@@ -16,9 +28,8 @@ interface HotelProps {
 export const HotelsPage: React.FC<HotelProps> = ({ setView, pendingSearch, clearSearch }) => {
   const [viewMode, setViewMode] = useState<'search' | 'results'>('search');
   const [loading, setLoading] = useState(false);
-  const [hotels, setHotels] = useState<Record<string, unknown>[]>([]);
+  const [hotels, setHotels] = useState<HotelRecord[]>([]);
 
-  // --- Search Form States ---
   const [destination, setDestination] = useState("");
   const [startDate, setStartDate] = useState("2026-04-25");
   const [endDate, setEndDate] = useState("2026-04-26");
@@ -34,7 +45,6 @@ export const HotelsPage: React.FC<HotelProps> = ({ setView, pendingSearch, clear
     return Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
 
-  // 🤖 AI INTELLIGENT FILL LOGIC (只填充，不自动搜索)
   useEffect(() => {
     if (pendingSearch) {
       const targetCity = pendingSearch.destination || pendingSearch.origin;
@@ -51,7 +61,7 @@ export const HotelsPage: React.FC<HotelProps> = ({ setView, pendingSearch, clear
     
     try {
       const mockResults = await searchHotels(destination);
-      const formattedResults = mockResults.map(h => ({
+      const formattedResults: any[] = mockResults.map(h => ({
         name: h.name,
         location: h.distance,
         price: `MYR ${h.priceMYR}`,
@@ -71,7 +81,7 @@ export const HotelsPage: React.FC<HotelProps> = ({ setView, pendingSearch, clear
     }
   };
 
-  const handleBooking = async (hotel: Record<string, unknown>) => {
+  const handleBooking = async (hotel: any) => {
     const user = auth.currentUser;
     if (!user) return alert("Please log in to book!");
 
@@ -102,11 +112,11 @@ export const HotelsPage: React.FC<HotelProps> = ({ setView, pendingSearch, clear
   if (viewMode === 'results') {
     return (
       <HotelResultsPage 
-        hotels={hotels} 
+        hotels={hotels as any} 
         destination={destination}
         searchMeta={{ startDate, endDate, guests: adults + children, nights: calculateNights() }}
         onBack={() => setViewMode('search')}
-        onBook={handleBooking}
+        onBook={handleBooking as any}
       />
     );
   }
@@ -118,7 +128,7 @@ export const HotelsPage: React.FC<HotelProps> = ({ setView, pendingSearch, clear
         ZenTravel
       </header>
 
-      <main className="hotels-container">
+      <div className="hotels-container">
         <h2 className="section-title">Hotels</h2>
 
         <div className="hotel-search-card">
@@ -147,7 +157,7 @@ export const HotelsPage: React.FC<HotelProps> = ({ setView, pendingSearch, clear
             {loading ? <Loader2 className="animate-spin" size={18} /> : "Search Stays"}
           </button>
         </div>
-      </main>
+      </div>
 
       {showDateModal && (
         <div className="modal-overlay" onClick={() => setShowDateModal(false)}>

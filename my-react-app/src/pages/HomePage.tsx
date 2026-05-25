@@ -47,13 +47,13 @@ export const HomePage: React.FC<HomeProps> = ({ setView, setPendingSearch }) => 
   const [showModal, setShowModal] = useState(false);
   const [isAiProcessing, setIsAiProcessing] = useState(false);
 
-  // 🤖 初始状态
+  // 🤖 Initialize status
   const [aiMessage, setAiMessage] = useState("Analyzing your travel profile...");
   const [targetSearchCity, setTargetSearchCity] = useState("");
 
 
 
-  // 🤖 Z-AI 智能地段分析
+  // 🤖 Z-AI Smart location analysis
   const getAiRegionRecommendation = (dest: string) => {
     const d = dest.toUpperCase();
     if (d.includes("DPS") || d.includes("BALI")) return { display: "Ubud or Seminyak", search: "Ubud" };
@@ -64,7 +64,7 @@ export const HomePage: React.FC<HomeProps> = ({ setView, setPendingSearch }) => 
     return { display: "the city center", search: "" };
   };
 
-  // 🤖 核心逻辑：获取真实机票
+  // 🤖 Get Flight Ticket
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;

@@ -82,6 +82,7 @@ function ruleBasedToolPlan(incident: ExtractedIncident): ToolPlan {
   };
 }
 
+// Parse GLM output, ensuring it matches expected structure and contains valid tools
 function parseGLMToolPlan(raw: string): { reasoning: string; tools: ToolCallPlan[] } | null {
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) return null;
@@ -107,6 +108,7 @@ function parseGLMToolPlan(raw: string): { reasoning: string; tools: ToolCallPlan
   }
 }
 
+//fill in any missing params with sensible defaults based on incident data and rules
 function sanitizeToolPlan(incident: ExtractedIncident, plan: ToolPlan): ToolPlan {
   const fromDefault = incident.origin || 'KUL';
   const toDefault = incident.destination || 'SIN';
@@ -299,7 +301,7 @@ function synthesisToActions(result: SynthesisResult): WorkflowAction[] {
 }
 
 // ─── PUBLIC ORCHESTRATOR (The Missing Export) ────────────────────────────────
-
+// The main function to run the entire REASON → ACT → OBSERVE/SYNTHESIZE flow
 export async function runReActOrchestration(incident: ExtractedIncident): Promise<ReActResult> {
   // 1. REASON
   const toolPlan = await planToolCalls(incident);

@@ -51,62 +51,65 @@ export const FlightResultsPage: React.FC<FlightResultsPageProps> = ({
           <div key={legIdx} className="leg-section">
             <h3 className="leg-title">{leg.title}</h3>
 
-            {leg.data.map((f, i: number) => (
-              <div key={i} className="premium-flight-card fade-in">
-                <div className="flight-card-header">
-                  <div className="airline-brand">
-                    <div className="airline-logo-box">{f.airline[0]}</div>
-                    <div className="airline-meta">
-                      <h4>{f.airline}</h4>
-                      <span>
-                        {f.flightNumber} • {f.cabin}
-                      </span>
+            {leg.data.map((f, i: number) => {
+              const fl = f as any; 
+              return (
+                <div key={i} className="premium-flight-card fade-in">
+                  <div className="flight-card-header">
+                    <div className="airline-brand">
+                      <div className="airline-logo-box">{fl.airline[0]}</div>
+                      <div className="airline-meta">
+                        <h4>{fl.airline}</h4>
+                        <span>
+                          {fl.flightNumber} • {fl.cabin}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="price-tag">
+                      <span className="cur">MYR</span> {fl.priceMYR}
                     </div>
                   </div>
-                  <div className="price-tag">
-                    <span className="cur">MYR</span> {f.priceMYR}
-                  </div>
-                </div>
 
-                <div className="flight-timeline-path">
-                  <div className="time-node">
-                    <strong>{f.timeDepart}</strong>
-                    <span className="iata">{f.from}</span>
+                  <div className="flight-timeline-path">
+                    <div className="time-node">
+                      <strong>{fl.timeDepart}</strong>
+                      <span className="iata">{fl.from}</span>
+                    </div>
+                    <div className="path-visual">
+                      <span className="duration-text">
+                        <Clock size={10} /> {fl.duration}
+                      </span>
+                      <div className="line"></div>
+                      <Plane size={16} className="plane-anim" />
+                    </div>
+                    <div className="time-node">
+                      <strong>{fl.timeLanding}</strong>
+                      <span className="iata">{fl.to}</span>
+                    </div>
                   </div>
-                  <div className="path-visual">
-                    <span className="duration-text">
-                      <Clock size={10} /> {f.duration}
+
+                  <div className="flight-card-footer">
+                    <span className="verified-badge">
+                      <ShieldCheck size={12} /> Best price match
                     </span>
-                    <div className="line"></div>
-                    <Plane size={16} className="plane-anim" />
-                  </div>
-                  <div className="time-node">
-                    <strong>{f.timeLanding}</strong>
-                    <span className="iata">{f.to}</span>
+                    {(() => {
+                      const isSelected =
+                        getFlightSelectionKey(selectedFlights[legIdx]) === getFlightSelectionKey(f);
+
+                      return (
+                        <button
+                          className={`select-flight-btn ${isSelected ? 'selected' : ''}`}
+                          onClick={() => onBook(f, legIdx)}
+                        >
+                          {isSelected ? 'Selected' : 'Select'}
+                          <ChevronRight size={16} />
+                        </button>
+                      );
+                    })()}
                   </div>
                 </div>
-
-                <div className="flight-card-footer">
-                  <span className="verified-badge">
-                    <ShieldCheck size={12} /> Best price match
-                  </span>
-                  {(() => {
-                    const isSelected =
-                      getFlightSelectionKey(selectedFlights[legIdx]) === getFlightSelectionKey(f);
-
-                    return (
-                  <button
-                    className={`select-flight-btn ${isSelected ? 'selected' : ''}`}
-                    onClick={() => onBook(f, legIdx)}
-                  >
-                    {isSelected ? 'Selected' : 'Select'}
-                    <ChevronRight size={16} />
-                  </button>
-                    );
-                  })()}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ))}
       </main>

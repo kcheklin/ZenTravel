@@ -58,8 +58,12 @@ export const ProfilePage = ({
       const hotelDocs = docs.filter((d: Record<string, unknown>) => d.type === 'hotel');
       const uniqueCities = new Set(hotelDocs.map((d: Record<string, unknown>) => (d.name || d.hotelName))).size || (docs.length > 0 ? 1 : 0);
       
-      let unlocked = 2; 
-      if (docs.length > 0) unlocked += 1; 
+      let unlocked = 0; 
+      // Badge 1: Welcome (Always True)
+      unlocked += 1;
+      // Badge 3: Newbie (First booking done)
+      if (docs.length > 0) unlocked += 1;
+      // Badge 4: Traveler (Completed 2 or more hotels)
       if (hotelDocs.length >= 2) unlocked += 1; 
       if (docs.some((d: Record<string, unknown>) => d.type === 'transport' || d.type === 'flight')) unlocked += 1; 
 
@@ -94,11 +98,11 @@ export const ProfilePage = ({
     setPromoInput('');
   };
 
-  if (localView === 'achievements') return <Achievement setLocalView={setLocalView} />;
+  if (localView === 'achievements') return <Achievement setLocalView={setLocalView as (v: string) => void} />;
   
   if (localView === 'currency') return (
     <Currency 
-      setLocalView={setLocalView} 
+      setLocalView={setLocalView as (v: string) => void} 
       currentCurrency={globalCurrency.code} 
       setCurrentCurrency={setGlobalCurrency} 
     />
@@ -106,7 +110,7 @@ export const ProfilePage = ({
   
   if (localView === 'cashback') return (
     <Cashback 
-      setLocalView={setLocalView} 
+      setLocalView={setLocalView as (v: string) => void} 
       balance={cashbackBalance} 
       setBalance={(newVal: number | ((prev: number) => number)) => {
         const oldVal = cashbackBalance;

@@ -29,7 +29,6 @@ export const AuthPage = ({ onGoogle, onRegister, onLogin, view, setView, setEmai
       width: '100%'
     }}>
       
-      {/* Your Circle */}
       <div className="logo-circle" style={{ 
           width: '220px', 
           height: '220px', 

@@ -34,13 +34,11 @@ export const Currency = ({ setLocalView, currentCurrency, setCurrentCurrency }: 
 
   return (
     <div className="currency-page fade-in">
-      {/* 头部导航 */}
       <div className="currency-header">
         <ChevronLeft onClick={() => setLocalView('main')} className="back-icon" />
         <span>Select your currency</span>
       </div>
 
-      {/* 搜索栏 */}
       <div className="search-container">
         <div className="search-bar">
           <Search size={18} />

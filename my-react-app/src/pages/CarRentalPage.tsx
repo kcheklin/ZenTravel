@@ -9,6 +9,23 @@ import { auth, db } from '../services/firebase';
 import { searchTransportOffers, toIATA, type TransportOffer } from '../services/mockTravelAPI';
 import "../styles/CarRentalPage.css";
 
+// Add this interface near the top of the file (after imports)
+interface BookingRecord {
+  id: string;
+  userId?: string;
+  type?: string;
+  status?: string;
+  date?: string;
+  flightNum?: string;
+  from?: string;
+  to?: string;
+  timeLanding?: string;
+  timeDepart?: string;
+  name?: string;
+  hotelName?: string;
+  [key: string]: unknown;
+}
+
 const AIRPORT_MAP_CENTERS: Record<string, { lat: number; lng: number }> = {
   KUL: { lat: 2.7456, lng: 101.7072 },
   SIN: { lat: 1.3644, lng: 103.9915 },
@@ -33,8 +50,8 @@ export const CarRentalPage = ({ setView }: { setView: (v: string) => void }) => 
   const [viewMode, setViewMode] = useState<'search' | 'results'>('search');
   const [loading, setLoading] = useState(false);
   const [transportOffers, setTransportOffers] = useState<TransportOffer[]>([]);
-  const [bookedFlights, setBookedFlights] = useState<Record<string, unknown>[]>([]);
-  const [bookedHotels, setBookedHotels] = useState<Record<string, unknown>[]>([]);
+  const [bookedFlights, setBookedFlights] = useState<BookingRecord[]>([]);
+const [bookedHotels, setBookedHotels] = useState<BookingRecord[]>([]);
   
   // --- Form Data States ---
   const [location, setLocation] = useState("Kuala Lumpur");

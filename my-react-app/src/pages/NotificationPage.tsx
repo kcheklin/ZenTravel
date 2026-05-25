@@ -69,7 +69,7 @@ export const NotificationPage: React.FC<NotificationPageProps> = ({ setView, glo
         }
         return null;
       }).filter(Boolean);
-      setNotifications(data);
+      setNotifications(data as any[]);
       setLoading(false);
     });
     return () => unsubscribe();
@@ -84,11 +84,11 @@ export const NotificationPage: React.FC<NotificationPageProps> = ({ setView, glo
     const cancelledName = notif.hotelName; // 这是要排除的名字
 
     if (notif.bookingType === 'transport') {
-      results = await searchTransport(location, cancelledName);
+      results = await searchTransport(location, cancelledName) as any[];
     } else if (notif.bookingType === 'flight') {
-      results = await searchFlights("KUL", location, cancelledName);
+      results = await searchFlights("KUL", location, cancelledName) as any[];
     } else {
-      results = await searchHotels(location, cancelledName);
+      results = await searchHotels(location, cancelledName) as any[];
     }
     
     setAiSuggestions(results.slice(0, 2));
@@ -153,17 +153,20 @@ export const NotificationPage: React.FC<NotificationPageProps> = ({ setView, glo
                 </div>
 
                 <div className="alt-hotels-list">
-                  {aiSuggestions.length > 0 ? aiSuggestions.map((item, idx) => (
-                    <div key={idx} className="alt-hotel-item" onClick={() => setView(analysisTarget.bookingType === 'transport' ? 'carrental' : analysisTarget.bookingType === 'flight' ? 'flights' : 'hotels')}>
-                      {analysisTarget.bookingType === 'transport' ? <Car size={24} color="#7b2cbf" /> : analysisTarget.bookingType === 'flight' ? <Plane size={24} color="#7b2cbf" /> : <Building2 size={24} color="#7b2cbf" />}
-                      <div className="alt-info">
-                        <h4>{item.name || item.airline}</h4>
-                        <p>{item.type || item.stars + ' ★'} · {item.note || item.distance}</p>
-                        <span className="alt-price">{symbol} {item.priceMYR}</span>
+                  {aiSuggestions.length > 0 ? aiSuggestions.map((item, idx) => {
+                    const altItem = item as any;
+                    return (
+                      <div key={idx} className="alt-hotel-item" onClick={() => setView(analysisTarget.bookingType === 'transport' ? 'carrental' : analysisTarget.bookingType === 'flight' ? 'flights' : 'hotels')}>
+                        {analysisTarget.bookingType === 'transport' ? <Car size={24} color="#7b2cbf" /> : analysisTarget.bookingType === 'flight' ? <Plane size={24} color="#7b2cbf" /> : <Building2 size={24} color="#7b2cbf" />}
+                        <div className="alt-info">
+                          <h4>{altItem.name || altItem.airline}</h4>
+                          <p>{altItem.type || altItem.stars + ' ★'} · {altItem.note || altItem.distance}</p>
+                          <span className="alt-price">{symbol} {altItem.priceMYR}</span>
+                        </div>
+                        <ChevronRight size={18} color="#ccc" />
                       </div>
-                      <ChevronRight size={18} color="#ccc" />
-                    </div>
-                  )) : (
+                    );
+                  }) : (
                     <p style={{textAlign:'center', color:'#999', fontSize:'0.9rem'}}>No other alternatives found in this location.</p>
                   )}
                 </div>

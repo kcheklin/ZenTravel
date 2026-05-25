@@ -76,6 +76,8 @@ export const RefundPage = ({ bookingId, setView }: RefundPageProps) => {
 
   if (loading) return <div className="rf-white-bg"><p style={{padding: '20px'}}>Loading booking details...</p></div>;
   if (!item) return <div className="rf-white-bg"><p style={{padding: '20px'}}>Error: Booking not found.</p></div>;
+  
+  const x = item as any;
 
   return (
     <div className="rf-white-bg">
@@ -88,31 +90,31 @@ export const RefundPage = ({ bookingId, setView }: RefundPageProps) => {
       <main className="rf-main-content">
         <div className="rf-ticket-box">
           <div className="rf-top-bar">
-            <span>{formatDisplayDate(item.date || item.timeDepart)}</span>
-            <span>{item.airline || item.name || item.hotelName}</span>
+            <span>{formatDisplayDate(x.date || x.timeDepart)}</span>
+            <span>{x.airline || x.name || x.hotelName}</span>
           </div>
 
           <div className="rf-card-flex">
             <div className="rf-left-info">
-              {item.type === 'flight' || item.type === 'ticket' ? (
+              {x.type === 'flight' || x.type === 'ticket' ? (
                 <div className="rf-path-ui">
-                  <span className="rf-city-name">{item.from || "N/A"}</span>
+                  <span className="rf-city-name">{x.from || "N/A"}</span>
                   <div className="rf-purple-line"></div>
-                  <span className="rf-city-name">{item.to || "N/A"}</span>
+                  <span className="rf-city-name">{x.to || "N/A"}</span>
                 </div>
               ) : (
                 <div className="rf-simple-info">
-                  <p className="rf-item-title">{item.name || item.hotelName}</p>
+                  <p className="rf-item-title">{x.name || x.hotelName}</p>
                   <p className="rf-item-sub">
-                    {item.type === 'transport' ? `Plate: ${item.plateNum || 'N/A'}` : (item.details || "Booking Detail")}
+                    {x.type === 'transport' ? `Plate: ${x.plateNum || 'N/A'}` : (x.details || "Booking Detail")}
                   </p>
                 </div>
               )}
             </div>
 
             <div className="rf-purple-action-card">
-              <p className="rf-p-text">{item.bookingNum || item.bookNum || item.id?.slice(0,8)}</p>
-              <p className="rf-p-text">{item.passenger || item.userName || "Customer"}</p>
+              <p className="rf-p-text">{x.bookingNum || x.bookNum || x.id?.slice(0,8)}</p>
+              <p className="rf-p-text">{x.passenger || x.userName || "Customer"}</p>
              
               <div className="rf-reason-container">
                 <label className="rf-label">Reason</label>

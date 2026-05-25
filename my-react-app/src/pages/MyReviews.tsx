@@ -35,9 +35,9 @@ export const MyReviews = ({ setView }: { setView: (v: string) => void }) => {
     );
     
     const unsubPending = onSnapshot(qPending, (snapshot) => {
-      const bookings = snapshot.docs
+      const bookings: any[] = snapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter((b: { hasReviewed?: boolean }) => b.hasReviewed !== true);
+        .filter((b: any) => b.hasReviewed !== true);
       setPendingBookings(bookings);
     });
 
@@ -61,7 +61,7 @@ export const MyReviews = ({ setView }: { setView: (v: string) => void }) => {
         timestamp: serverTimestamp()
       });
 
-      await updateDoc(doc(db, "Booking", selectedBooking.id), {
+      await updateDoc(doc(db, "Booking", (selectedBooking as any).id), { 
         hasReviewed: true
       });
 
@@ -88,25 +88,28 @@ export const MyReviews = ({ setView }: { setView: (v: string) => void }) => {
         ) : (
           <div className="review-list-grid">
             
-            {pendingBookings.map(booking => (
-              <div key={booking.id} className="review-card-item pending-review-card" style={{ borderLeft: '4px solid #7b2cbf', backgroundColor: '#f9f5ff' }}>
-                <div className="review-hotel-header">
-                  <img src={booking.imageUrl || booking.image} alt="hotel" className="small-hotel-img" />
-                  <div className="hotel-meta-info">
-                    <h4 style={{ color: '#7b2cbf' }}>Share your experience!</h4>
-                    <p>{booking.name || booking.hotelName}</p>
-                    <small>{booking.date}</small>
+            {pendingBookings.map(booking => {
+              const b = booking as any; // 🌟 局部转换为 any
+              return (
+                <div key={b.id} className="review-card-item pending-review-card" style={{ borderLeft: '4px solid #7b2cbf', backgroundColor: '#f9f5ff' }}>
+                  <div className="review-hotel-header">
+                    <img src={b.imageUrl || b.image} alt="hotel" className="small-hotel-img" />
+                    <div className="hotel-meta-info">
+                      <h4 style={{ color: '#7b2cbf' }}>Share your experience!</h4>
+                      <p>{b.name || b.hotelName}</p>
+                      <small>{b.date}</small>
+                    </div>
                   </div>
+                  <button
+                    className="btn-write-review"
+                    style={{ marginTop: '10px', background: '#7b2cbf', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}
+                    onClick={() => setSelectedBooking(booking)}
+                  >
+                    Write a Review
+                  </button>
                 </div>
-                <button
-                  className="btn-write-review"
-                  style={{ marginTop: '10px', background: '#7b2cbf', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}
-                  onClick={() => setSelectedBooking(booking)}
-                >
-                  Write a Review
-                </button>
-              </div>
-            ))}
+              );
+            })}
 
             {reviews.length === 0 && pendingBookings.length === 0 ? (
               <div className="empty-state-container">
@@ -114,19 +117,22 @@ export const MyReviews = ({ setView }: { setView: (v: string) => void }) => {
                 <p className="empty-msg-text">No reviews submitted yet.</p>
               </div>
             ) : (
-              reviews.map(review => (
-                <div key={review.id} className="review-card-item">
-                  <div className="review-hotel-header">
-                    <img src={review.hotelImage} alt="hotel" className="small-hotel-img" />
-                    <div className="hotel-meta-info">
-                      <h4>{review.hotelName}</h4>
-                      <p>{review.date}</p>
+              reviews.map(review => {
+                const r = review as any; 
+                return (
+                  <div key={r.id} className="review-card-item">
+                    <div className="review-hotel-header">
+                      <img src={r.hotelImage} alt="hotel" className="small-hotel-img" />
+                      <div className="hotel-meta-info">
+                        <h4>{r.hotelName}</h4>
+                        <p>{r.date}</p>
+                      </div>
+                      <div className="rating-pill">{r.rating} ★</div>
                     </div>
-                    <div className="rating-pill">{review.rating} ★</div>
+                    <p className="review-content-body">{r.content}</p>
                   </div>
-                  <p className="review-content-body">{review.content}</p>
-                </div>
-              ))
+                ); 
+              })   
             )}
           </div>
         )}
@@ -135,9 +141,9 @@ export const MyReviews = ({ setView }: { setView: (v: string) => void }) => {
       {selectedBooking && (
         <div className="review-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
           <div className="review-modal-content" style={{ background: 'white', padding: '25px', borderRadius: '20px', width: '100%', maxWidth: '400px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
-            <h3 style={{ marginBottom: '10px' }}>Review {selectedBooking.name || selectedBooking.hotelName}</h3>
-            <p style={{ fontSize: '13px', color: '#666' }}>Stayed on: {selectedBooking.date}</p>
-            
+            <h3 style={{ marginBottom: '10px' }}>Review {(selectedBooking as any).name || (selectedBooking as any).hotelName}</h3>
+            <p style={{ fontSize: '13px', color: '#666' }}>Stayed on: {(selectedBooking as any).date}</p>
+
             <div style={{ display: 'flex', gap: '8px', margin: '20px 0' }}>
               {[1, 2, 3, 4, 5].map(num => (
                 <Star

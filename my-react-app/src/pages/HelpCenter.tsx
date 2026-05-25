@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import '../styles/HelpCenter.css';
-
-// 导入新的透明背景图片
 import mascotImg from '../assets/MASCOT-removebg-preview.png'; 
 
 interface Props { setView: (view: string) => void; }
@@ -32,7 +30,6 @@ export const HelpCenter = ({ setView }: Props) => {
         <div style={{ width: 24 }}></div>
       </header>
 
-      {/* 背景颜色已通过内联样式或 CSS 修改为紫色 #8600E0 */}
       <div className="help-banner" style={{ backgroundColor: '#8600E0' }}>
         <div className="banner-text">
           <h2>Need help? We're here for you!</h2>

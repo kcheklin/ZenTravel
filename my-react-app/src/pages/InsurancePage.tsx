@@ -64,7 +64,8 @@ export const InsurancePage: React.FC<InsuranceProps> = ({ setView, pendingSearch
   const getFilteredTrips = () => {
     if (!selectedPlan) return [];
     return uninsuredTrips.filter(trip => {
-      const dest = trip.to || trip.name;
+      const t = trip as any; 
+      const dest = t.to || t.name;
       const international = isInternational(dest);
       return selectedPlan.type === 'overseas' ? international : !international;
     });
@@ -131,16 +132,19 @@ export const InsurancePage: React.FC<InsuranceProps> = ({ setView, pendingSearch
               <section className="protected-section">
                 <h3 className="section-subtitle">Active Protection</h3>
                 <div className="protected-list">
-                  {protectedTrips.map(trip => (
-                    <div key={trip.id} className="protected-item">
-                       <ShieldCheck size={18} color="#2e7d32" />
-                       <div className="protected-info">
-                          <span className="dest">{trip.to || trip.name}</span>
-                          <span className="date">Insured • Trip Date: {trip.date}</span>
-                       </div>
-                       <span className="status-pill">Covered</span>
-                    </div>
-                  ))}
+                  {protectedTrips.map(trip => {
+                    const t = trip as any; // 🌟 局部转换
+                    return (
+                      <div key={t.id} className="protected-item">
+                         <ShieldCheck size={18} color="#2e7d32" />
+                         <div className="protected-info">
+                            <span className="dest">{t.to || t.name}</span>
+                            <span className="date">Insured • Trip Date: {t.date}</span>
+                         </div>
+                         <span className="status-pill">Covered</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -158,15 +162,18 @@ export const InsurancePage: React.FC<InsuranceProps> = ({ setView, pendingSearch
                 <label className="select-label">Select Trip to Insure:</label>
                 {getFilteredTrips().length > 0 ? (
                   <div className="trip-list">
-                    {getFilteredTrips().map(trip => (
-                      <div key={trip.id} className={`trip-option ${selectedTripId === trip.id ? 'active' : ''}`} onClick={() => setSelectedTripId(trip.id)}>
-                        {trip.type === 'flight' ? <Plane size={16}/> : <Building size={16}/>}
-                        <div className="trip-info">
-                          <span className="trip-dest">{trip.to || trip.name}</span>
-                          <span className="trip-date">{trip.date}</span>
+                    {getFilteredTrips().map(trip => {
+                      const t = trip as any; // 🌟 局部转换
+                      return (
+                        <div key={t.id} className={`trip-option ${selectedTripId === t.id ? 'active' : ''}`} onClick={() => setSelectedTripId(t.id)}>
+                          {t.type === 'flight' ? <Plane size={16}/> : <Building size={16}/>}
+                          <div className="trip-info">
+                            <span className="trip-dest">{t.to || t.name}</span>
+                            <span className="trip-date">{t.date}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="no-trips-msg">No eligible uninsured trips found.</p>

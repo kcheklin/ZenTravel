@@ -4,7 +4,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { ChevronLeft, X, Info } from 'lucide-react';
 import '../styles/Achievement.css';
 
-// 导入图片资源
+//importing mascot images
 import mascotImg from '../assets/MASCOT.png'; 
 import mascot1 from '../assets/MASCOT1.png';
 import mascot2 from '../assets/MASCOT2.png';
@@ -12,24 +12,33 @@ import mascot3 from '../assets/MASCOT3.png';
 import mascot4 from '../assets/MASCOT4.png';
 import mascot5 from '../assets/MASCOT5.png';
 
-export const Achievement = ({ setLocalView }: { setLocalView: (v: string) => void }) => {
-  const [selectedZen, setSelectedZen] = useState<Record<string, unknown> | null>(null);
-  const [bookingData, setBookingData] = useState<Record<string, unknown>[]>([]);
-  const [hasReview, setHasReview] = useState(false); 
+interface ZenBadge {
+  id: number;
+  name: string;
+  status: string;
+  unlocked: boolean;
+  img: string;
+  desc: string;
+}
 
-  // --- 逻辑部分：从 Firebase 实时获取数据 ---
+export const Achievement = ({ setLocalView }: { setLocalView: (v: string) => void }) => {
+  const [selectedZen, setSelectedZen] = useState<ZenBadge | null>(null);
+  const [bookingData, setBookingData] = useState<Record<string, any>[]>([]);
+  const [hasReview, setHasReview] = useState(false);
+
+  // --- Real-time Data Synchronization (Firebase Firestore Listeners) ---
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
 
-    // 监听订单数据
+    // Stream booking telemetry for the active authenticated user
     const qBooking = query(collection(db, "Booking"), where("userId", "==", user.uid));
     const unsubBooking = onSnapshot(qBooking, (snapshot) => {
       const docs = snapshot.docs.map(doc => doc.data());
       setBookingData(docs);
     });
 
-    // 监听评论数据 (判断是否有评论)
+    // Check if the user has posted any feedback/reviews
     const qReviews = query(collection(db, "My_Reviews"), where("userId", "==", user.uid));
     const unsubReviews = onSnapshot(qReviews, (snapshot) => {
       setHasReview(!snapshot.empty);
@@ -41,7 +50,7 @@ export const Achievement = ({ setLocalView }: { setLocalView: (v: string) => voi
     };
   }, []);
 
-  // --- 逻辑部分：动态计算统计数据 ---
+  // --- Travel Metrics Calculation ---
   const hotelBookings = bookingData.filter(b => b.type === 'hotel');
   const transportBookings = bookingData.filter(b => b.type === 'transport' || b.type === 'flight');
   
@@ -50,13 +59,13 @@ export const Achievement = ({ setLocalView }: { setLocalView: (v: string) => voi
     total: bookingData.length,
     cities: new Set(hotelBookings.map(h => h.name)).size || (hotelBookings.length > 0 ? 1 : 0),
     nights: hotelBookings.reduce((acc, curr) => {
-        // 从详情文本中提取数字，例如 "2 nights" -> 2
+        // Parse numerical duration values from text payload (e.g., "2 nights" -> 2)
         const n = parseInt((curr.details as string)?.match(/\d+/)?.[0] || "1");
         return acc + n;
     }, 0)
   };
 
-  // --- 逻辑部分：将数据映射到成就系统 ---
+  // --- Gamified Achievement Badges Mapping ---
   const zensData = [
     { id: 1, name: 'Welcome', status: '1/1', unlocked: true, img: mascot1, desc: "Joined ZenTravel family!" },
     { id: 2, name: 'Navigator', status: '0/1', unlocked: false, img: mascot2, desc: "Explore more places using the map." }, 
@@ -68,7 +77,6 @@ export const Achievement = ({ setLocalView }: { setLocalView: (v: string) => voi
 
   return (
     <div className="profile-container fade-in">
-      {/* 头部保留原版设计 */}
       <div className="sub-page-header">
         <ChevronLeft onClick={() => setLocalView('main')} className="back-icon" />
         <span>Travel achievements</span>
@@ -79,7 +87,6 @@ export const Achievement = ({ setLocalView }: { setLocalView: (v: string) => voi
           My Zens <Info size={14} style={{marginLeft: '5px', color: '#ccc'}} />
         </h3>
         
-        {/* 成就网格保留原版设计 */}
         <div className="agojis-grid">
           {zensData.map(zen => (
             <div 
@@ -106,7 +113,6 @@ export const Achievement = ({ setLocalView }: { setLocalView: (v: string) => voi
           ))}
         </div>
 
-        {/* 弹窗详情保留原版设计 */}
         {selectedZen && (
           <div className="modal-overlay" onClick={() => setSelectedZen(null)}>
             <div className="zen-progress-modal" onClick={e => e.stopPropagation()}>
