@@ -51,7 +51,7 @@ By combining a multi-stage **Brain Master** workflow with specialized AI agents,
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/WYlim1003/ZenTravel.git
+git clone https://github.com/kcheklin/ZenTravel.git
 cd zentravel/my-react-app
 ```
 
