@@ -52,6 +52,7 @@ export interface TransportOffer {
   dropoffLabel: string;
   summary: string;
   recommended?: boolean;
+  available?: boolean;
 }
 
 export interface CompensationResult {
@@ -220,9 +221,54 @@ const AIRPORT_HOTELS: Record<string, HotelOffer[]> = {
 
 const TRANSPORT_OFFERS: Record<string, TransportOffer[]> = {
   DPS: [
-    { name: 'Bali Private Chauffeur', type: 'Private Car', priceMYR: 180, rating: 4.9, available: true, note: '8-hour English speaking driver' },
-    { name: 'Blue Bird Taxi Premium', type: 'Taxi', priceMYR: 60, rating: 4.7, available: true, note: 'Fixed rate to Seminyak/Ubud' },
-    { name: 'Grab', type: 'e-Hailing', priceMYR: 45, rating: 4.5, available: true, note: 'Standard transport' },
+    {
+      id: 'dps-1',
+      name: 'Bali Private Chauffeur',
+      company: 'https://logo.clearbit.com/baliprivatechauffeur.com',
+      imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=900&q=80',
+      carType: 'Private Car',
+      plateNum: 'DPS 001',
+      price: 180,
+      seats: 4,
+      bags: 2,
+      pickupLabel: 'Ngurah Rai International Airport',
+      dropoffLabel: 'Seminyak / Ubud',
+      summary: '8-hour English speaking driver',
+      driverRating: 4.9,
+      available: true,
+    },
+    {
+      id: 'dps-2',
+      name: 'Blue Bird Taxi Premium',
+      company: 'https://logo.clearbit.com/bluebirdgroup.com',
+      imageUrl: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=900&q=80',
+      carType: 'Taxi',
+      plateNum: 'DPS 002',
+      price: 60,
+      seats: 4,
+      bags: 2,
+      pickupLabel: 'Ngurah Rai International Airport',
+      dropoffLabel: 'Seminyak / Ubud',
+      summary: 'Fixed rate to Seminyak/Ubud',
+      driverRating: 4.7,
+      available: true,
+    },
+    {
+      id: 'dps-3',
+      name: 'Grab',
+      company: 'https://logo.clearbit.com/grab.com',
+      imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=80',
+      carType: 'e-Hailing',
+      plateNum: 'DPS 003',
+      price: 45,
+      seats: 4,
+      bags: 2,
+      pickupLabel: 'Ngurah Rai International Airport',
+      dropoffLabel: 'City Centre',
+      summary: 'Standard transport',
+      driverRating: 4.5,
+      available: true,
+    },
   ],
 };
 
@@ -230,6 +276,25 @@ const DEFAULT_HOTELS: HotelOffer[] = [
   { name: 'Airport Transit Hotel',   stars: 3, distance: 'At terminal',     priceMYR: 280, amenity: 'Hourly & nightly rates', available: true, recommended: true },
   { name: 'Ibis Airport Hotel',      stars: 3, distance: '5-min shuttle',   priceMYR: 320, amenity: 'Restaurant & bar on-site', available: true },
   { name: 'Novotel Airport Hotel',   stars: 4, distance: '10-min free bus', priceMYR: 490, amenity: 'Pool, gym, free cancellation', available: true },
+];
+
+const DEFAULT_TRANSPORT: TransportOffer[] = [
+  {
+    id: 'default-1',
+    name: 'Grab',
+    company: 'https://logo.clearbit.com/grab.com',
+    imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=900&q=80',
+    carType: 'e-Hailing',
+    plateNum: 'KUL 001',
+    price: 45,
+    seats: 4,
+    bags: 2,
+    pickupLabel: 'Airport Terminal',
+    dropoffLabel: 'City Centre',
+    summary: 'Standard airport transfer',
+    driverRating: 4.5,
+    available: true,
+  },
 ];
 
 const TRANSPORT_COMPANIES = [
