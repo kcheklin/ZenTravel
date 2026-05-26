@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage"; 
 
+// act as identifier for the app to connect to cloud database
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "zentravel-c550a.firebaseapp.com",
@@ -17,8 +18,9 @@ if (!firebaseConfig.apiKey) {
   console.warn("Firebase API Key is missing! Check your .env file and restart your terminal.");
 }
 
+//prevent multiple instances of the app being initialized during development
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-// Export services
+// Export services, so they can be imported and used in other frontend pages
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app); 

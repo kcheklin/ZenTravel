@@ -1,5 +1,6 @@
 import { auth, db } from './firebase';
 import { 
+  // Firebase Authentication functions
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
   GoogleAuthProvider, 
@@ -12,7 +13,7 @@ export const registerUser = async (email: string, password: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Create the user document in the "users" collection
+    // Create the user document in the "users" collection, ensure password n privacy are not leaked
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       email: user.email,

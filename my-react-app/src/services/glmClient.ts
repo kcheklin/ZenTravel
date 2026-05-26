@@ -48,13 +48,15 @@ export class GLMClient {
   ): Promise<string> {
     let lastErr: Error = new Error('Unknown error');
     let tokenBudget = Math.max(maxTokens, THINKING_MODEL_MIN_MAX_TOKENS);
-
+    
+    // exponential backoff retry loop
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       if (attempt > 0) {
         // Shorter retry delay (800ms, 1600ms...)
         await new Promise((r) => setTimeout(r, 800 * attempt)); 
       }
 
+      //extend timeout for each retry
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), CLIENT_TIMEOUT_MS);
 
@@ -142,7 +144,7 @@ export class GLMClient {
     }
 
     // If we get here, it means all retries failed
-    throw lastErr;
+    throw lastErr; // preserve the stack trace & prevent fail silently
   }
 }
 
