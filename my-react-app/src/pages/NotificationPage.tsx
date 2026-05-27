@@ -81,7 +81,7 @@ export const NotificationPage: React.FC<NotificationPageProps> = ({ setView, glo
     
     let results: Record<string, unknown>[] = [];
     const location = notif.location || "Bali";
-    const cancelledName = notif.hotelName; // 这是要排除的名字
+    const cancelledName = notif.hotelName; 
 
     if (notif.bookingType === 'transport') {
       results = await searchTransport(location, cancelledName) as any[];

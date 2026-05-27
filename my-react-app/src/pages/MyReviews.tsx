@@ -89,7 +89,7 @@ export const MyReviews = ({ setView }: { setView: (v: string) => void }) => {
           <div className="review-list-grid">
             
             {pendingBookings.map(booking => {
-              const b = booking as any; // 🌟 局部转换为 any
+              const b = booking as any; 
               return (
                 <div key={b.id} className="review-card-item pending-review-card" style={{ borderLeft: '4px solid #7b2cbf', backgroundColor: '#f9f5ff' }}>
                   <div className="review-hotel-header">
