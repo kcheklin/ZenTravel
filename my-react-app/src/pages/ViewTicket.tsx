@@ -45,6 +45,7 @@ export const ViewTicket = ({ ticketId, setView }: ViewTicketProps) => {
       doc(db, 'Booking', ticketId),
       (docSnap) => {
         if (docSnap.exists()) {
+          // @ts-ignore
           setTicket({ id: docSnap.id, ...docSnap.data() });
         }
       },
@@ -133,7 +134,9 @@ export const ViewTicket = ({ ticketId, setView }: ViewTicketProps) => {
             <div className="vt-loc">
               <span className="vt-city-code">{isTransport ? (ticket.name || 'CAR') : (ticket.from || '---')}</span>
               <span className="vt-time-display">
-                {isTransport ? (ticket.date || 'Scheduled') : formatTime(ticket.timeDepart)}
+                {isTransport ? (ticket.date || 'Scheduled') : 
+                // @ts-ignore
+                formatTime(ticket.timeDepart)}
               </span>
             </div>
 
@@ -142,9 +145,13 @@ export const ViewTicket = ({ ticketId, setView }: ViewTicketProps) => {
             </div>
 
             <div className="vt-loc vt-right">
-              <span className="vt-city-code">{isTransport ? (ticket.plateNum || '---') : (ticket.to || '---')}</span>
               <span className="vt-time-display">
-                {isTransport ? `RM ${ticket.price ?? '--'}` : formatTime(ticket.timeLanding)}
+                {isTransport ? (
+                  `RM ${ticket.price ?? '--'}`
+                ) : (
+                  // @ts-ignore
+                  formatTime(ticket.timeLanding)
+                )}
               </span>
             </div>
           </div>
