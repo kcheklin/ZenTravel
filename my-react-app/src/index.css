@@ -7,7 +7,6 @@ body, html, #root {
   font-family: "Times New Roman", Times, serif;
 }
 
-/* 统一的渐变背景，仅用于 Landing 和 Auth */
 .auth-bg-gradient {
   background: linear-gradient(180deg, #b066e3 0%, #d199ff 100%);
   width: 100vw;

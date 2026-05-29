@@ -25,6 +25,7 @@ import tripPlannerImg from '../assets/TripPlanner_pic.png';
 interface HomeProps {
   setView: (v: string) => void;
   setPendingSearch: (data: { origin: string, destination: string } | null) => void;
+  selectedId?: string;
 }
 
 const extractLocationIntelligence = (term: string) => {

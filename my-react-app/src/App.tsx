@@ -240,7 +240,7 @@ function App() {
         <Suspense fallback={pageLoader}>
           <AuthPage 
             view={view as 'landing' | 'auth' | 'register' | 'login' | 'home' | 'profile'} 
-            setView={setView} 
+            setView={setView as any} 
             onGoogle={handleGoogle} 
             onRegister={handleRegister}
             onLogin={handleLogin}
